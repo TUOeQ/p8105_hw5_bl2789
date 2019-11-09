@@ -8,6 +8,10 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(kableExtra)
+
+```
+```{r}
 set.seed(10)
 
 iris_with_missing = iris %>% 
@@ -15,31 +19,36 @@ iris_with_missing = iris %>%
   mutate(Species = as.character(Species))
 ```
 
-#Problem 1
-## a
+###Problem 1
+
 ```{r}
 str(iris_with_missing)
 
+
+kable(head(iris_with_missing),format = "markdown")
+```
+
+```{r}
 replace = function(x){
         if (class(x) == "numeric") {replace_na(x, mean(x, na.rm = TRUE))}       
         else if (class(x) == "character") {replace_na(x, "virginica")} 
                 }
 
-final_iris = replace(iris_with_missing)
+##apply using map
 
+final_iris = map_df(iris_with_missing, replace)
 
-head(final_iris)
-  
-
- #is.na(iris_with_missing[,])
-a = function(x){for(i in 1:length(x)){
-  is.na(x[,i]) = mean(x[,i], na.rm = TRUE)}
-   }
-
-
-#replace_na("virginica")
- #if(is.numeric(x[,i]))
- 
-   
+kable(head(final_iris),format = "markdown")
 ```
+
+
+###Problem 2
+
+```{r}
+input_files = list.files(path = './data/data', full.names = TRUE)
+
+#input_data = purrr::map(input_files,.)
+```
+
+
 
