@@ -64,5 +64,6 @@ kable(head(final_iris),format = "markdown")
 ``` r
 input_files = list.files(path = './data/data', full.names = TRUE)
 
-#input_data = purrr::map(input_files,.)
+
+input_data = purrr::map_df(input_files, ~read.csv(.))
 ```
