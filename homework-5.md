@@ -11,7 +11,7 @@ iris_with_missing = iris %>%
   mutate(Species = as.character(Species))
 ```
 
-\#\#\#Problem 1
+### Problem 1
 
 ``` r
 str(iris_with_missing)
@@ -203,7 +203,7 @@ kable(final_iris,format = "markdown")
 |     5.819231 |    3.400000 |     5.400000 |    2.300000 | virginica  |
 |     5.900000 |    3.000000 |     5.100000 |    1.800000 | virginica  |
 
-\#\#\#Problem 2
+### Problem 2
 
 ``` r
 input_files = list.files(path = './data/data', full.names = TRUE)
@@ -240,3 +240,23 @@ ggplot(output_data ,aes(x = week, y = data, group = subject_id, color = type)) +
 ```
 
 ![](homework-5_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+### Problem 3
+
+``` r
+simulate_fun = function(n,beta_0,beta_1,var){
+  x = rnorm(n)
+  y = beta_0+beta_1*x+rnorm(n,mean = 0,sd = sqrt(var))
+}
+
+simulate_fun(30,2,0,50)
+
+broom::tidy
+```
+
+    ## function (x, ...) 
+    ## {
+    ##     UseMethod("tidy")
+    ## }
+    ## <bytecode: 0x000000001271df60>
+    ## <environment: namespace:generics>

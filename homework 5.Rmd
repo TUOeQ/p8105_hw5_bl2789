@@ -21,7 +21,7 @@ iris_with_missing = iris %>%
   mutate(Species = as.character(Species))
 ```
 
-###Problem 1
+### Problem 1
 
 ```{r}
 str(iris_with_missing)
@@ -44,7 +44,7 @@ kable(final_iris,format = "markdown")
 ```
 
 
-###Problem 2
+### Problem 2
 
 ```{r}
 input_files = list.files(path = './data/data', full.names = TRUE)
@@ -83,4 +83,20 @@ ggplot(output_data ,aes(x = week, y = data, group = subject_id, color = type)) +
 
 ```
 
+
+### Problem 3
+
+
+```{r}
+
+simulate_fun = function(n,beta_0,beta_1,var){
+  x = rnorm(n)
+  y = beta_0+beta_1*x+rnorm(n,mean = 0,sd = sqrt(var))
+}
+
+simulate_fun(30,2,0,50)
+
+broom::tidy
+
+```
 
