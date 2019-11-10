@@ -40,7 +40,7 @@ replace = function(x){
 
 final_iris = map_df(iris_with_missing, replace)
 
-kable(head(final_iris),format = "markdown")
+kable(final_iris,format = "markdown")
 ```
 
 
@@ -52,21 +52,35 @@ input_files = list.files(path = './data/data', full.names = TRUE)
 
 input_data = purrr::map_df(input_files, ~read.csv(.))
 
-data = input_data%>%
+output_data = input_data%>%
        pivot_longer(week_1:week_8,
        names_to = "week",
        values_to = "data")%>%
-       mutate(id = c(rep("con_1",8),rep("con_2",8),
+       mutate(subject_id = c(rep("con_1",8),rep("con_2",8),
                      rep("con_3",8),rep("con_4",8),
                      rep("con_5",8),rep("con_6",8),rep("con_7",8),rep("con_8",8),
                      rep("con_9",8),rep("con_10",8),
                      rep("exp_1",8),rep("exp_2",8),rep("exp_3",8),rep("exp_4",8),
                      rep("exp_5",8),rep("exp_6",8),rep("exp_7",8),rep("exp_8",8),
                      rep("exp_9",8),rep("exp_10",8)),
-              type = c(rep(0,80),rep(1,80)))
-
+              type = c(rep("control",80),rep("experiment",80)),
+              type = as.factor(type))%>%
+  group_by(week)
 
 ```
 
+
+#### Graph
+```{r}
+
+ggplot(output_data ,aes(x = week, y = data, group = subject_id, color = type)) +
+  geom_line() +
+   labs(
+    title = "Plot for control arm vs. experiment arm",
+    x = "Observation time",
+    y = "Data for arm",
+    caption = "Data from zip")
+
+```
 
 
