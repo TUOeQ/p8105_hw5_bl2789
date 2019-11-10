@@ -40,7 +40,7 @@ replace = function(x){
 
 final_iris = map_df(iris_with_missing, replace)
 
-kable(final_iris,format = "markdown")
+kable(final_iris,format = "markdown",digits = 3)
 ```
 
 
@@ -118,4 +118,62 @@ kable(head(summary_1),digits = 3)
 
 
 ```
+```{r}
+#data_2 = append(rerun(10000, simulate_fun(30,2,1,50)),
+#              rerun(10000, simulate_fun(30,2,2,50)),
+#              rerun(10000, simulate_fun(30,2,3,50)),
+#              rerun(10000, simulate_fun(30,2,4,50)),
+#              rerun(10000, simulate_fun(30,2,5,50)),
+#              rerun(10000, simulate_fun(30,2,6,50)))
+
+#linear = map(data_2,~broom::tidy(lm(y~x, data = .)))
+
+#summary_2 =  data_1%>%
+             #tibble(linear,
+                #     beta_1 = c(rep(1,10000),rep(2,10000),rep(3,10000),
+                #               rep(4,10000),rep(5,10000),rep(6,10000)),
+                #   estimate = map(linear, ~ .x[2,2]),
+                #  p_value = map(linear, ~ .x[2,5]))%>% 
+            # unnest(estimate:p_value) %>% 
+            # select(-linear)
+  
+
+#summary_2
+```
+
+
+
+
+```{r}
+set.seed(1)
+
+
+sim_regression = function(n, beta_0, beta_1,var,simulate_fun) {
+    tibble(
+      beta_1,
+      sim_data =rerun(10000, simulate_fun(30,2,beta_1,50)),
+      ls_fit = map(sim_data,~broom::tidy(lm(y ~ x, data = .))),
+      estimate = map(ls_fit, ~ .x[2,2]),
+      p_value = map(ls_fit, ~ .x[2,5]))%>% 
+  unnest(estimate:p_value) %>% 
+  select(-ls_fit)
+  
+}
+      
+beta_1 = list(1, 2, 3, 4, 5, 6)
+
+sim_results = 
+  map(beta_1, ~sim_regression(30,2,.x,50,simulate_fun))%>% 
+  bind_rows()
+
+  
+
+```
+
+
+```{r}
+
+```
+
+
 
