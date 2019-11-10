@@ -66,4 +66,17 @@ input_files = list.files(path = './data/data', full.names = TRUE)
 
 
 input_data = purrr::map_df(input_files, ~read.csv(.))
+
+data = input_data%>%
+       pivot_longer(week_1:week_8,
+       names_to = "week",
+       values_to = "data")%>%
+       mutate(id = c(rep("con_1",8),rep("con_2",8),
+                     rep("con_3",8),rep("con_4",8),
+                     rep("con_5",8),rep("con_6",8),rep("con_7",8),rep("con_8",8),
+                     rep("con_9",8),rep("con_10",8),
+                     rep("exp_1",8),rep("exp_2",8),rep("exp_3",8),rep("exp_4",8),
+                     rep("exp_5",8),rep("exp_6",8),rep("exp_7",8),rep("exp_8",8),
+                     rep("exp_9",8),rep("exp_10",8)),
+              type = c(rep(0,80),rep(1,80)))
 ```
