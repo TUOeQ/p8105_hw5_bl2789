@@ -3,6 +3,8 @@ Homework 5
 Bingkun Luo
 11/2/2019
 
+### Problem 1
+
 ``` r
 set.seed(10)
 
@@ -11,7 +13,7 @@ iris_with_missing = iris %>%
   mutate(Species = as.character(Species))
 ```
 
-### Problem 1
+General glance for the data:
 
 ``` r
 str(iris_with_missing)
@@ -36,6 +38,10 @@ kable(head(iris_with_missing),format = "markdown")
 |          4.6 |         3.1 |          1.5 |          NA | setosa  |
 |          5.0 |         3.6 |          1.4 |         0.2 | setosa  |
 |          5.4 |         3.9 |          1.7 |         0.4 | setosa  |
+
+Since there is only two cases for missing value, either numeric or
+character, we apply the function below and there is the table for the
+final result of replacing iris missing data:
 
 ``` r
 replace = function(x){
@@ -241,7 +247,17 @@ ggplot(output_data ,aes(x = week, y = data, group = subject_id, color = type)) +
 
 ![](homework-5_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
+*Comments*:
+
+The observed data shows that the experiment arms have a overall larger
+number than the control group. Experiment arm data has an increasing
+trend over the study period, which is eight weeks, at the end of the
+study experiment data could be doubled. Whereas, the control group seems
+more flat over time and did not develop a trend.
+
 ### Problem 3
+
+#### Step 1
 
 ``` r
 simulate_fun = function(n,beta_0,beta_1,var){
@@ -256,10 +272,10 @@ data_1 = rerun(10000, simulate_fun(30,2,0,50))
 linear = map(data_1,~broom::tidy(lm(y~x, data = .)))
 
 summary_1 =  data_1%>%
-             tibble(linear,
-                   beta_1 = 0,
-                   estimate = map(linear, ~ .x[2,2]),
-                   p_value = map(linear, ~ .x[2,5]))%>% 
+             tibble(beta_1 = 0,
+                    linear,
+                    estimate = map(linear, ~ .x[2,2]),
+                    p_value = map(linear, ~ .x[2,5]))%>% 
              unnest(estimate:p_value) %>% 
              select(-linear)
   
@@ -626,13 +642,15 @@ c(-0.312953455942104, -9.09508653354294, -0.598269214402721,
 #summary_2
 ```
 
+#### Step 2
+
 ``` r
 set.seed(1)
 
 
 sim_regression = function(n, beta_0, beta_1,var,simulate_fun) {
     tibble(
-      beta_1,
+      true_beta = beta_1,
       sim_data =rerun(10000, simulate_fun(30,2,beta_1,50)),
       ls_fit = map(sim_data,~broom::tidy(lm(y ~ x, data = .))),
       estimate = map(ls_fit, ~ .x[2,2]),
@@ -642,9 +660,36 @@ sim_regression = function(n, beta_0, beta_1,var,simulate_fun) {
   
 }
       
-beta_1 = list(1, 2, 3, 4, 5, 6)
+beta_1 = list(1,2,3,4,5,6)
 
 sim_results = 
   map(beta_1, ~sim_regression(30,2,.x,50,simulate_fun))%>% 
   bind_rows()
 ```
+
+#### Step 3
+
+``` r
+beta_1_combine = list(0,1,2,3,4,5,6)
+
+summary_final = 
+  map(beta_1_combine, ~sim_regression(30,2,.x,50,simulate_fun))%>% 
+  bind_rows()
+```
+
+#### Plot
+
+``` r
+plot_1 = summary_final%>%
+         group_by(true_beta)%>%
+         mutate(p_reject = sum(p.value < 0.05)/length(p.value))
+  
+  
+  
+  
+  
+ggplot(plot_1,aes(x = true_beta, y = p_reject, col = true_beta)) +
+  geom_point() 
+```
+
+![](homework-5_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
