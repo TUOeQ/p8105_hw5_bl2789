@@ -684,12 +684,54 @@ plot_1 = summary_final%>%
          group_by(true_beta)%>%
          mutate(p_reject = sum(p.value < 0.05)/length(p.value))
   
-  
-  
-  
-  
 ggplot(plot_1,aes(x = true_beta, y = p_reject, col = true_beta)) +
-  geom_point() 
+  geom_point() +
+  geom_line()+
+   labs(
+    title = "The power of the test",
+    x = "True Beta_1",
+    y = "proportion of times the null was rejected",
+    caption = "Data from simulation")
 ```
 
 ![](homework-5_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+plot_2 = summary_final%>%
+         group_by(true_beta)%>%
+         summarize(mean_beta = mean(estimate)) 
+   
+  
+  
+ggplot(plot_2,aes(x = true_beta, y = mean_beta, col = true_beta)) +
+  geom_point()+ 
+  geom_line()+
+  labs(
+    title = "",
+    x = "True Beta_1",
+    y = "Average estimate of Beta_1 ",
+    caption = "Data from simulation")
+```
+
+![](homework-5_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+plot_3 = summary_final%>%
+         filter(p.value < 0.05) %>%
+         group_by(true_beta)%>%
+         summarize(mean_beta = mean(estimate)) 
+
+
+ggplot(plot_2,aes(x = true_beta, y = mean_beta, col = true_beta)) +
+  geom_point(alpha = 0.5)+ 
+  geom_line(col = "sky blue")+
+  geom_point(data = plot_3,alpha = 0.5)+
+  geom_line(data = plot_3,col="orange")+
+  labs(
+    title = "",
+    x = "True Beta_1",
+    y = "Average estimate of Beta_1 ",
+    caption = "Data from simulation")
+```
+
+![](homework-5_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
